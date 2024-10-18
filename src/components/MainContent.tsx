@@ -1,7 +1,21 @@
-type Props = {};
+import { SimpleGrid } from "@chakra-ui/react";
+import { Meal } from "../types";
+import MealCard from "./MealCard";
+import SkeletonCard from "./SkeletonCard";
 
-function MainCOntent({}: Props) {
-  return <div>MainCOntent</div>;
+type Props = {
+  meals: Meal[];
+  loading: boolean;
+};
+
+function MainContent({ meals, loading }: Props) {
+  const skeletons = [1, 2, 3, 4, 5, 6, 7, 8];
+  return (
+    <SimpleGrid columns={[2, null, 3]} spacing="20px">
+      {loading && skeletons.map((skeleton) => <SkeletonCard key={skeleton} />)}
+      {!loading && meals.map((m) => <MealCard key={m.isMeal} meal={m} />)}
+    </SimpleGrid>
+  );
 }
 
-export default MainCOntent;
+export default MainContent;
