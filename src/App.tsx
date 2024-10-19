@@ -1,10 +1,11 @@
 import { Grid, GridItem } from "@chakra-ui/react";
 import Header from "./components/Header";
 import SideNav from "./components/SideNav";
-import MainContent from "./components/MainCOntent";
+import MainContent from "./components/MainContent";
 import { useState } from "react";
-import { Category, Meal } from "./types";
+import { Category, Meal, SearchForm } from "./types";
 import { useHttpData } from "./hooks/useHttpData";
+import axios from "axios";
 
 const url = "https://www.themealdb.com/api/json/v1/1/list.php?c=list";
 
@@ -18,9 +19,21 @@ const App = () => {
     useState<Category>(defaultCategory);
 
   const { loading, data } = useHttpData<Category>(url);
-  const { loading: loadingMeal, data: dataMeal } = useHttpData<Meal>(
-    makeMealUrl(defaultCategory)
-  );
+  const {
+    loading: loadingMeal,
+    data: dataMeal,
+    setData: setMeals,
+    setLoading: setLoadingMeal,
+  } = useHttpData<Meal>(makeMealUrl(defaultCategory));
+
+  const searchApi = (searchForm: SearchForm) => {
+    const url = `https://www.themealdb.com/api/v1/1/search.php?s=${searchForm.search}`;
+    setLoadingMeal(true);
+    axios
+      .get<{ meals: Meal[] }>(url)
+      .then(({ data }) => setMeals(data.meals))
+      .finally(() => setLoadingMeal(false));
+  };
 
   return (
     <Grid
@@ -39,7 +52,7 @@ const App = () => {
         bg="white"
         area={"header"}
       >
-        <Header />
+        <Header onSubmit={searchApi} />
       </GridItem>
       <GridItem
         pos="sticky"
