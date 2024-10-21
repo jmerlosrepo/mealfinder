@@ -5,9 +5,13 @@ export type Category = {
 export type Meal = {
   strMeal: string;
   strMealThumb: string;
-  isMeal: string;
+  idMeal: string;
 };
 
 export type SearchForm = {
   search: string;
+};
+
+export type MealDetails = {
+  [key: string]: string;
 };
